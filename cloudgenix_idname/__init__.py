@@ -167,7 +167,7 @@ def interface_query(site_id, element_id, sdk):
     if_id_to_name_return = {}
     if_id_data = {}
 
-    resp = sdk.get.securityzones(site_id, element_id)
+    resp = sdk.get.interfaces(site_id, element_id)
     status = resp.cgx_status
     raw_interfaces = resp.cgx_content
 
@@ -427,13 +427,17 @@ def generate_id_name_map(sdk):
     id_network_contexts = network_context_dicts(sdk)
     global_id_dict.update(id_network_contexts)
 
+    logger.info("Caching Appdefs..")
+    id_appdef_dict, appdef_id_list = appdefs_to_name_dict(sdk)
+    global_id_dict.update(id_appdef_dict)
+
     logger.info("Caching Policysets..")
     id_policyset_dict, policyset_id_list = policyset_to_name_dict(sdk)
     global_id_dict.update(id_policyset_dict)
 
     logger.info("Caching Security Policysets..")
     id_securitypolicyset_dict, securitypolicyset_id_list = securitypolicyset_to_name_dict(sdk)
-    global_id_dict.update(id_policyset_dict)
+    global_id_dict.update(id_securitypolicyset_dict)
 
     logger.info("Caching Security Zones..")
     id_securityzone_dict, securityzone_id_list = securityzone_to_name_dict(sdk)
