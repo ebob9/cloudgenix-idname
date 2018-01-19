@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='cloudgenix_idname',
-      version='1.0.0',
+      version='1.1.0',
       description='ID -> Name translator for the CloudGenix Python SDK',
       url='https://github.com/ebob9/cloudgenix-idname',
       author='Aaron Edwards',
@@ -15,6 +15,7 @@ setup(name='cloudgenix_idname',
             "Development Status :: 5 - Production/Stable",
             "Intended Audience :: Developers",
             "License :: OSI Approved :: MIT License",
-            "Programming Language :: Python :: 2.7"
+            "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3"
       ]
       )
