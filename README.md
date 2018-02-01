@@ -34,7 +34,7 @@ MIT
 #### Version
 Version | Changes
 ------- | --------
-**1.1.2**| Fix issue with tenant_viewonly not being able to read operators.
+**1.1.2**| Fix minor return issue.
 **1.1.1**| Fix issue with tenant_viewonly not being able to read operators.
 **1.1.0**| Fix various bugs, issue #1, and Python 3 support
 **1.0.0**| Initial Release.
