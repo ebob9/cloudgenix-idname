@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='cloudgenix_idname',
-      version='1.1.0',
+      version='1.1.1',
       description='ID -> Name translator for the CloudGenix Python SDK',
       url='https://github.com/ebob9/cloudgenix-idname',
       author='Aaron Edwards',
