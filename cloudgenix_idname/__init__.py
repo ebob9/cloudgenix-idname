@@ -405,7 +405,8 @@ def generate_id_name_map(sdk):
 
     logger.info("Caching Operators..")
     id_operator_dict = operators_to_name_dict(sdk)
-    global_id_dict.update(id_operator_dict)
+    if id_operator_dict:
+        global_id_dict.update(id_operator_dict)
 
     logger.info("Caching Sites..")
     id_site_dict, site_id_list, site_info_dict = siteid_to_name_dict(sdk)
