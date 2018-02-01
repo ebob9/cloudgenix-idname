@@ -32,7 +32,7 @@ def operators_to_name_dict(sdk):
 
     if not status or not operators_list:
         logger.info("ERROR: unable to get operators for account '{0}'.".format(sdk.tenant_name))
-        return xlate_dict, id_list
+        return xlate_dict
 
     # build translation dict
     for operator in operators_list:
@@ -405,6 +405,7 @@ def generate_id_name_map(sdk):
 
     logger.info("Caching Operators..")
     id_operator_dict = operators_to_name_dict(sdk)
+    print id_operator_dict
     if id_operator_dict:
         global_id_dict.update(id_operator_dict)
 
