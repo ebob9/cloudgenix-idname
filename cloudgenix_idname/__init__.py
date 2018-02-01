@@ -405,7 +405,6 @@ def generate_id_name_map(sdk):
 
     logger.info("Caching Operators..")
     id_operator_dict = operators_to_name_dict(sdk)
-    print id_operator_dict
     if id_operator_dict:
         global_id_dict.update(id_operator_dict)
 
