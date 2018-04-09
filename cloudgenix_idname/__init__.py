@@ -27,7 +27,7 @@ def operators_to_name_dict(sdk):
     resp = sdk.get.tenant_operators()
     status = resp.cgx_status
     raw_operators = resp.cgx_content
-    
+
     operators_list = raw_operators.get('items', None)
 
     if not status or not operators_list:
@@ -380,9 +380,14 @@ def securitypolicyset_to_name_dict(sdk):
 
 
 def generate_id_name_map(sdk):
-    
+    """
+    Generate the ID-NAME map dict
+    :param sdk: CloudGenix API constructor
+    :return: ID Name dictionary
+    """
+
     global_id_dict = {}
-    
+
     # system struct
     system_list = []
 
@@ -400,7 +405,7 @@ def generate_id_name_map(sdk):
     site_swi_dict = {}
     path_id_to_name = {}
     vpn_id_to_anynet_id = {}
-    
+
     # Create xlation dicts and lists.
 
     logger.info("Caching Operators..")
@@ -495,6 +500,10 @@ def generate_id_name_map(sdk):
 
                 if name and swi_id:
                     swi_id_name_dict[swi_id] = name
+                elif swi_id and wan_network_id:
+                    # Handle SWI with no name.
+                    wan_network_name = id_wannetwork_dict.get(wan_network_id, wan_network_id)
+                    swi_id_name_dict[swi_id] = "Circuit to {0}".format(wan_network_name)
 
                 if swi_id:
                     # update SWI -> Site xlation dict
@@ -515,7 +524,7 @@ def generate_id_name_map(sdk):
                     wan_network_to_swi_dict[wan_network_id] = existing_swi_list
 
             # add to global
-            global_swi_id.update(swi_id_dict)
+            global_swi_id.update(swi_id_name_dict)
 
         # query LAN Network info
         resp = sdk.get.lannetworks(site)
@@ -696,3 +705,12 @@ def generate_id_name_map(sdk):
     global_id_dict.update(path_id_to_name)
 
     return global_id_dict
+
+
+def gen(sdk):
+    """
+    Shortcut to generate_id_name_map
+    :param sdk: CloudGenix API constructor
+    :return: ID Name dictionary
+    """
+    return generate_id_name_map(sdk)
