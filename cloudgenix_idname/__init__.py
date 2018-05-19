@@ -21,8 +21,9 @@ role_xlate = {
 
 
 def operators_to_name_dict(sdk):
+
     xlate_dict = {}
-    id_list = []
+    reverse_xlate_dict = {}
 
     resp = sdk.get.tenant_operators()
     status = resp.cgx_status
@@ -32,30 +33,29 @@ def operators_to_name_dict(sdk):
 
     if not status or not operators_list:
         logger.info("ERROR: unable to get operators for account '{0}'.".format(sdk.tenant_name))
-        return xlate_dict
+        return xlate_dict, reverse_xlate_dict
 
     # build translation dict
     for operator in operators_list:
         name = operator.get('name')
-        id = operator.get('id')
+        o_id = operator.get('id')
         email = operator.get('email')
 
-        if name and id:
-            xlate_dict[id] = name
+        if name and o_id:
+            xlate_dict[o_id] = name
+            reverse_xlate_dict[name] = o_id
         # if no name, use email as secondary option.
-        elif email and id:
-            xlate_dict[id] = email
+        elif email and o_id:
+            xlate_dict[o_id] = email
+            reverse_xlate_dict[email] = o_id
 
-    return xlate_dict
+    return xlate_dict, reverse_xlate_dict
 
 
 def siteid_to_name_dict(sdk):
-    """
-    Create a Site ID to name xlation table.
-    :param sdk: sdk global info struct
-    :return: xlate_dict, a dict with siteid key to site name.
-    """
+
     xlate_dict = {}
+    reverse_xlate_dict = {}
     id_info_dict = {}
     id_list = []
 
@@ -69,31 +69,29 @@ def siteid_to_name_dict(sdk):
 
     if not status or not sites_list:
         logger.info("ERROR: unable to get sites for account '{0}'.".format(sdk.tenant_name))
-        return xlate_dict, id_list, id_info_dict
+        return xlate_dict, reverse_xlate_dict, id_list, id_info_dict
 
     # build translation dict
     for site in sites_list:
         # logger.info(json.dumps(site, indent=4)
         name = site.get('name')
-        id = site.get('id')
+        s_id = site.get('id')
 
-        if name and id:
-            xlate_dict[id] = name
+        if name and s_id:
+            xlate_dict[s_id] = name
+            reverse_xlate_dict[name] = s_id
 
-        if id:
-            id_list.append(id)
-            id_info_dict[id] = site
+        if s_id:
+            id_list.append(s_id)
+            id_info_dict[s_id] = site
 
-    return xlate_dict, id_list, id_info_dict
+    return xlate_dict, reverse_xlate_dict, id_list, id_info_dict
 
 
 def elements_to_name_dict(sdk):
-    """
-    Create a Site ID to name xlation table.
-    :param sdk: sdk global info struct
-    :return: xlate_dict, a dict with siteid key to site name.
-    """
+
     name_xlate_dict = {}
+    reverse_xlate_dict = {}
     site_xlate_dict = {}
     id_list = []
 
@@ -107,33 +105,31 @@ def elements_to_name_dict(sdk):
 
     if not status or not elements_list:
         logger.info("ERROR: unable to get elements for account '{0}'.".format(sdk.tenant_name))
-        return name_xlate_dict, site_xlate_dict, id_list
+        return name_xlate_dict, reverse_xlate_dict, site_xlate_dict, id_list
 
     # build translation dict
     for element in elements_list:
         name = element.get('name')
-        id = element.get('id')
+        e_id = element.get('id')
         site = element.get('site_id', None)
 
-        if name and id:
-            name_xlate_dict[id] = name
+        if name and e_id:
+            name_xlate_dict[e_id] = name
+            reverse_xlate_dict[name] = e_id
 
-        if site and id:
-            site_xlate_dict[id] = site
+        if site and e_id:
+            site_xlate_dict[e_id] = site
 
-        if id:
-            id_list.append(id)
+        if e_id:
+            id_list.append(e_id)
 
-    return name_xlate_dict, site_xlate_dict, id_list
+    return name_xlate_dict, reverse_xlate_dict, site_xlate_dict, id_list
 
 
 def securityzone_to_name_dict(sdk):
-    """
-    Create a Site ID to name xlation table.
-    :param sdk: sdk global info struct
-    :return: xlate_dict, a dict with siteid key to site name.
-    """
+
     name_xlate_dict = {}
+    reverse_xlate_dict = {}
     id_list = []
 
     resp = sdk.get.securityzones()
@@ -146,25 +142,30 @@ def securityzone_to_name_dict(sdk):
 
     if not status or not securityzones_list:
         logger.info("ERROR: unable to get securityzones for account '{0}'.".format(sdk.tenant_name))
-        return name_xlate_dict, id_list
+        return name_xlate_dict, reverse_xlate_dict, id_list
 
     # build translation dict
     for securityzone in securityzones_list:
         name = securityzone.get('name')
-        id = securityzone.get('id')
+        sz_id = securityzone.get('id')
 
-        if name and id:
-            name_xlate_dict[id] = name
+        if name and sz_id:
+            name_xlate_dict[sz_id] = name
+            reverse_xlate_dict[name] = sz_id
 
-        if id:
-            id_list.append(id)
+        if sz_id:
+            id_list.append(sz_id)
 
-    return name_xlate_dict, id_list
+    return name_xlate_dict, reverse_xlate_dict, id_list
 
 
 def interface_query(site_id, element_id, sdk):
+
     interface_return = []
+    pretty_if_id_to_name_return = {}
+    pretty_if_name_to_id_return = {}
     if_id_to_name_return = {}
+    if_name_to_id_return = {}
     if_id_data = {}
 
     resp = sdk.get.interfaces(site_id, element_id)
@@ -176,30 +177,33 @@ def interface_query(site_id, element_id, sdk):
     # logger.info(json.dumps(interfaces_list, indent=4)
 
     if not status or not interfaces_list:
-        logger.info("ERROR: unable to get interfaces for element '{0}' at site '{1}'." \
-                    .format(element_id, site_id))
-        return interface_return, if_id_to_name_return, if_id_data
+        logger.info("ERROR: unable to get interfaces for element '{0}' at site '{1}'."
+                    "".format(element_id, site_id))
+        return interface_return, pretty_if_id_to_name_return, pretty_if_name_to_id_return, \
+            if_id_to_name_return, if_name_to_id_return, if_id_data
 
     # build translation dict
 
     for interface in interfaces_list:
         name = interface.get('name', "")
-        id = interface.get('id', None)
+        if_id = interface.get('id', None)
+        interface_return.append(interface)
 
-        if id:
-            if_id_to_name_return[id] = "Interface " + str(name)
-            interface_return.append(interface)
-            if_id_data[id] = interface
+        if name and if_id:
+            pretty_if_id_to_name_return[if_id] = "Interface " + str(name)
+            if_id_to_name_return[if_id] = name
+            pretty_if_name_to_id_return["Interface " + str(name)] = if_id
+            if_name_to_id_return[name] = if_id
 
-    return interface_return, if_id_to_name_return, if_id_data
+        if if_id:
+            if_id_data[if_id] = interface
+
+    return interface_return, pretty_if_id_to_name_return, pretty_if_name_to_id_return, \
+        if_id_to_name_return, if_name_to_id_return, if_id_data
 
 
 def wan_network_dicts(sdk):
-    """
-    Create a Site ID <-> Name xlation constructs
-    :param passed_sdk: sdk global info struct
-    :return: xlate_dict, a dict with wannetworkid key to wan_network name. wan_network_list, a list of wan_network IDs
-    """
+
     id_xlate_dict = {}
     name_xlate_dict = {}
     wan_network_id_list = []
@@ -223,7 +227,7 @@ def wan_network_dicts(sdk):
 
         if name and wan_network_id:
             id_xlate_dict[wan_network_id] = "{0} ({1})".format(name, wn_type)
-            name_xlate_dict[name] = wan_network_id
+            name_xlate_dict["{0} ({1})".format(name, wn_type)] = wan_network_id
             wan_network_id_list.append(wan_network_id)
 
         if wan_network_id and wn_type:
@@ -233,12 +237,9 @@ def wan_network_dicts(sdk):
 
 
 def circuit_categories_dicts(sdk):
-    """
-    Create a circuit Catagory ID to name table
-    :param sdk: sdk global info struct
-    :return: xlate_dict, a dict with wannetworkid key to wan_network name. wan_network_list, a list of wan_network IDs
-    """
+
     id_xlate_dict = {}
+    reverse_xlate_dict = {}
 
     resp = sdk.get.waninterfacelabels()
     status = resp.cgx_status
@@ -247,8 +248,8 @@ def circuit_categories_dicts(sdk):
     wan_labels_list = raw_wan_labels.get('items', None)
 
     if not status or not wan_labels_list:
-        logger.info("ERROR: unable to get circuit catagories for account '{0}'.".format(sdk.tenant_name))
-        return id_xlate_dict
+        logger.info("ERROR: unable to get circuit categories for account '{0}'.".format(sdk.tenant_name))
+        return id_xlate_dict, reverse_xlate_dict
 
     # build translation dict
     for wan_label in wan_labels_list:
@@ -257,17 +258,15 @@ def circuit_categories_dicts(sdk):
 
         if name and wan_label_id:
             id_xlate_dict[wan_label_id] = name
+            reverse_xlate_dict[name] = wan_label_id
 
-    return id_xlate_dict
+    return id_xlate_dict, reverse_xlate_dict
 
 
 def network_context_dicts(sdk):
-    """
-    Create a network context id to Name table
-    :param sdk: sdk global info struct
-    :return: xlate_dict, a dict with wannetworkid key to wan_network name. wan_network_list, a list of wan_network IDs
-    """
+
     id_xlate_dict = {}
+    reverse_xlate_dict = {}
 
     resp = sdk.get.networkcontexts()
     status = resp.cgx_status
@@ -277,7 +276,7 @@ def network_context_dicts(sdk):
 
     if not status or not network_contexts_list:
         logger.info("ERROR: unable to get network contexts for account '{0}'.".format(sdk.tenant_name))
-        return id_xlate_dict
+        return id_xlate_dict, reverse_xlate_dict
 
     # build translation dict
     for network_context in network_contexts_list:
@@ -286,17 +285,15 @@ def network_context_dicts(sdk):
 
         if name and network_context_id:
             id_xlate_dict[network_context_id] = name
+            reverse_xlate_dict[name] = network_context_id
 
-    return id_xlate_dict
+    return id_xlate_dict, reverse_xlate_dict
 
 
 def appdefs_to_name_dict(sdk):
-    """
-    Create a Site ID to name xlation table.
-    :param sdk: sdk global info struct
-    :return: xlate_dict, a dict with siteid key to site name.
-    """
+
     xlate_dict = {}
+    reverse_xlate_dict = {}
     id_list = []
 
     resp = sdk.get.appdefs()
@@ -307,24 +304,27 @@ def appdefs_to_name_dict(sdk):
 
     if not status or not appdefs_list:
         logger.info("ERROR: unable to get appdefs for account '{0}'.".format(sdk.tenant_name))
-        return xlate_dict, id_list
+        return xlate_dict, reverse_xlate_dict, id_list
 
     # build translation dict
     for appdef in appdefs_list:
         name = appdef.get('display_name')
-        id = appdef.get('id')
+        a_id = appdef.get('id')
 
-        if name and id:
-            xlate_dict[id] = name
+        if name and a_id:
+            xlate_dict[a_id] = name
+            reverse_xlate_dict[name] = a_id
 
-        if id:
-            id_list.append(id)
+        if a_id:
+            id_list.append(a_id)
 
-    return xlate_dict, id_list
+    return xlate_dict, reverse_xlate_dict, id_list
 
 
 def policyset_to_name_dict(sdk):
+
     xlate_dict = {}
+    reverse_xlate_dict = {}
     id_list = []
 
     resp = sdk.get.policysets()
@@ -335,24 +335,27 @@ def policyset_to_name_dict(sdk):
 
     if not status or not policyset_list:
         logger.info("ERROR: unable to get policysets for account '{0}'.".format(sdk.tenant_name))
-        return xlate_dict, id_list
+        return xlate_dict, reverse_xlate_dict, id_list
 
     # build translation dict
     for policyset in policyset_list:
         name = policyset.get('name')
-        id = policyset.get('id')
+        p_id = policyset.get('id')
 
-        if name and id:
-            xlate_dict[id] = name
+        if name and p_id:
+            xlate_dict[p_id] = name
+            reverse_xlate_dict[name] = p_id
 
-        if id:
-            id_list.append(id)
+        if p_id:
+            id_list.append(p_id)
 
-    return xlate_dict, id_list
+    return xlate_dict, reverse_xlate_dict, id_list
 
 
 def securitypolicyset_to_name_dict(sdk):
+
     xlate_dict = {}
+    reverse_xlate_dict = {}
     id_list = []
 
     resp = sdk.get.securitypolicysets()
@@ -372,21 +375,24 @@ def securitypolicyset_to_name_dict(sdk):
 
         if name and securitypolicyset_id:
             xlate_dict[securitypolicyset_id] = name
+            reverse_xlate_dict[name] = securitypolicyset_id
 
         if securitypolicyset_id:
             id_list.append(securitypolicyset_id)
 
-    return xlate_dict, id_list
+    return xlate_dict, reverse_xlate_dict, id_list
 
 
-def generate_id_name_map(sdk):
+def generate_id_name_map(sdk, reverse=False):
     """
     Generate the ID-NAME map dict
     :param sdk: CloudGenix API constructor
+    :param reverse: Generate reverse name-> ID map as well, return tuple with both.
     :return: ID Name dictionary
     """
 
-    global_id_dict = {}
+    global_id_name_dict = {}
+    global_name_id_dict = {}
 
     # system struct
     system_list = []
@@ -409,45 +415,58 @@ def generate_id_name_map(sdk):
     # Create xlation dicts and lists.
 
     logger.info("Caching Operators..")
-    id_operator_dict = operators_to_name_dict(sdk)
+    id_operator_dict, operator_id_dict = operators_to_name_dict(sdk)
     if id_operator_dict:
-        global_id_dict.update(id_operator_dict)
+        global_id_name_dict.update(id_operator_dict)
+    global_name_id_dict.update(operator_id_dict)
+    if operator_id_dict:
+        global_name_id_dict.update(operator_id_dict)
 
     logger.info("Caching Sites..")
-    id_site_dict, site_id_list, site_info_dict = siteid_to_name_dict(sdk)
-    global_id_dict.update(id_site_dict)
+    id_site_dict, site_id_dict, site_id_list, site_info_dict = siteid_to_name_dict(sdk)
+    global_id_name_dict.update(id_site_dict)
+    global_name_id_dict.update(site_id_dict)
 
     logger.info("Caching Elements..")
-    id_element_dict, element_site_dict, element_id_list = elements_to_name_dict(sdk)
-    global_id_dict.update(id_element_dict)
+    id_element_dict, element_id_dict, element_site_dict, element_id_list = elements_to_name_dict(sdk)
+    global_id_name_dict.update(id_element_dict)
+    global_name_id_dict.update(element_id_dict)
 
     logger.info("Caching WAN Networks..")
     id_wannetwork_dict, name_wannetwork_id_dict, wannetwork_id_list, wannetwork_type_dict = wan_network_dicts(sdk)
-    global_id_dict.update(id_wannetwork_dict)
+    global_id_name_dict.update(id_wannetwork_dict)
+    global_name_id_dict.update(name_wannetwork_id_dict)
 
     logger.info("Caching Circuit Catagories..")
-    id_circuit_categories = circuit_categories_dicts(sdk)
-    global_id_dict.update(id_circuit_categories)
+    id_circuit_categories, name_circuit_categories = circuit_categories_dicts(sdk)
+    global_id_name_dict.update(id_circuit_categories)
+    global_name_id_dict.update(name_circuit_categories)
 
     logger.info("Caching Network Contexts..")
-    id_network_contexts = network_context_dicts(sdk)
-    global_id_dict.update(id_network_contexts)
+    id_network_contexts, name_circuit_contexts = network_context_dicts(sdk)
+    global_id_name_dict.update(id_network_contexts)
+    global_name_id_dict.update(name_circuit_contexts)
 
     logger.info("Caching Appdefs..")
-    id_appdef_dict, appdef_id_list = appdefs_to_name_dict(sdk)
-    global_id_dict.update(id_appdef_dict)
+    id_appdef_dict, name_appdef_dict, appdef_id_list = appdefs_to_name_dict(sdk)
+    global_id_name_dict.update(id_appdef_dict)
+    global_name_id_dict.update(name_appdef_dict)
 
     logger.info("Caching Policysets..")
-    id_policyset_dict, policyset_id_list = policyset_to_name_dict(sdk)
-    global_id_dict.update(id_policyset_dict)
+    id_policyset_dict, name_policyset_dict, policyset_id_list = policyset_to_name_dict(sdk)
+    global_id_name_dict.update(id_policyset_dict)
+    global_name_id_dict.update(name_policyset_dict)
 
     logger.info("Caching Security Policysets..")
-    id_securitypolicyset_dict, securitypolicyset_id_list = securitypolicyset_to_name_dict(sdk)
-    global_id_dict.update(id_securitypolicyset_dict)
+    id_securitypolicyset_dict, name_securitypolicyset_dict, \
+        securitypolicyset_id_list = securitypolicyset_to_name_dict(sdk)
+    global_id_name_dict.update(id_securitypolicyset_dict)
+    global_name_id_dict.update(name_securitypolicyset_dict)
 
     logger.info("Caching Security Zones..")
-    id_securityzone_dict, securityzone_id_list = securityzone_to_name_dict(sdk)
-    global_id_dict.update(id_securityzone_dict)
+    id_securityzone_dict, securityzone_id_dict, securityzone_id_list = securityzone_to_name_dict(sdk)
+    global_id_name_dict.update(id_securityzone_dict)
+    global_name_id_dict.update(securityzone_id_dict)
 
     id_interface_dict = {}
 
@@ -465,7 +484,8 @@ def generate_id_name_map(sdk):
             # if it is bound, and bound to this site, add to list.
             if site_in and site_in == site:
                 # Query interfaces
-                interfaces_list, if_id_to_name_item, if_id_data_entry = interface_query(site, element, sdk)
+                interfaces_list, if_id_to_name_item, if_name_to_id_item, _, \
+                    _, if_id_data_entry = interface_query(site, element, sdk)
                 # add the element to the list
                 elements.append({
                     'id': element,
@@ -542,13 +562,13 @@ def generate_id_name_map(sdk):
             # add to global
             global_ln_id.update(ln_id_dict)
 
-
     logger.info("Loading VPN topology information for {0} sites, please wait...".format(len(site_id_list)))
 
     # add all interface IDs
-    global_id_dict.update(if_id_to_name)
-    global_id_dict.update(global_swi_id)
-    global_id_dict.update(global_ln_id)
+    # note - can't reliably make reverse name to ID items here, as they are not global.
+    global_id_name_dict.update(if_id_to_name)
+    global_id_name_dict.update(global_swi_id)
+    global_id_name_dict.update(global_ln_id)
 
     for site in site_id_list:
         site_swi_list = []
@@ -702,15 +722,20 @@ def generate_id_name_map(sdk):
         path_id_to_name[vpn_key] = vpn_text
 
     # done, update global
-    global_id_dict.update(path_id_to_name)
+    global_id_name_dict.update(path_id_to_name)
 
-    return global_id_dict
+    if reverse:
+        # return both id_name and what we can get of name_id.
+        return global_id_name_dict, global_name_id_dict
+
+    return global_id_name_dict
 
 
-def gen(sdk):
+def gen(sdk, reverse=False):
     """
     Shortcut to generate_id_name_map
     :param sdk: CloudGenix API constructor
+    :param reverse: Generate reverse name-> ID map as well, return tuple with both.
     :return: ID Name dictionary
     """
-    return generate_id_name_map(sdk)
+    return generate_id_name_map(sdk, reverse=reverse)
