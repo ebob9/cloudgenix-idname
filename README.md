@@ -23,7 +23,7 @@ My VPN link is "SJC Branch ('AT&T' via 'Circuit to AT&T') <-> ('ATT2' via 'Circu
 * Active CloudGenix Account
 * Python >= 2.7 or >=3.6
 * Python modules:
-    * cloudgenix >=4.7.1b1 - <https://github.com/CloudGenix/sdk-python>
+    * cloudgenix >=5.1.1b1 - <https://github.com/CloudGenix/sdk-python>
 
 #### Code Example
 Comes with `test.py` that creates an ID -> Name map and dumps to console.
@@ -34,6 +34,7 @@ MIT
 #### Version
 Version | Changes
 ------- | --------
+**1.2.1**| Add support for SDK >= 5.1.1b1
 **1.2.0**| Add reverse lookup support (name -> ID) to all functions. Reverse lookup has limitations as names are not unique.
 **1.1.3**| Resolve Issue #6, enhance Site WAN Interface mapping, add shortcut to generate_id_name_map.
 **1.1.2**| Fix minor return issue.

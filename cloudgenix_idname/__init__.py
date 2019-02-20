@@ -583,24 +583,9 @@ def generate_id_name_map(sdk, reverse=False):
         status = False
         rest_call_retry = 0
 
-        while not status:
-            logger.debug('QUERY: {0}'.format(json.dumps(query, indent=4)))
-            resp = sdk.post.topology(query)
-            status = resp.cgx_status
-            topology = resp.cgx_content
-
-            if not status:
-                logger.info("API request for topology for site ID {0} failed/timed out. Retrying.".format(site))
-                rest_call_retry += 1
-                # have we hit retry limit?
-                if rest_call_retry >= sdk['rest_call_max_retry']:
-                    # Bail out
-                    logger.info("ERROR: could not query site ID {0}. Continuing.".format(site))
-                    status = True
-                    topology = False
-                else:
-                    # wait and keep going.
-                    time.sleep(1)
+        resp = sdk.post.topology(query)
+        status = resp.cgx_status
+        topology = resp.cgx_content
 
         if status and topology:
             # iterate topology. We need to iterate all of the matching SWIs, and existing anynet connections (sorted).
@@ -642,6 +627,9 @@ def generate_id_name_map(sdk, reverse=False):
                     if not all_vpns.get(vpn_lookup_key, None):
                         # path is not in VPNs, add.
                         all_vpns[vpn_lookup_key] = link
+        else:
+            # Bail out
+            logger.info("ERROR: could not query site ID {0}. Continuing.".format(site))
 
     # update all_anynets with site info. Can't do this above, because xlation table not finished when needed.
     for anynet_key, link in all_anynets.items():
