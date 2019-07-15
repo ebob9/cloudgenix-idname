@@ -383,6 +383,35 @@ def securitypolicyset_to_name_dict(sdk):
     return xlate_dict, reverse_xlate_dict, id_list
 
 
+def spokeclusters_to_name_dict(sdk):
+    xlate_dict = {}
+    reverse_xlate_dict = {}
+    id_list = []
+
+    resp = sdk.get.sites()
+    sitelist = resp.cgx_content.get("items", None)
+
+    for site in sitelist:
+        sid = site['id']
+
+        resp = sdk.get.spokeclusters(site_id = sid)
+        spokeclusterlist = resp.cgx_content.get("items", None)
+
+        # build translation dict
+        for sc in spokeclusterlist:
+            name = sc['name']
+            spokecluster_id = sc['id']
+
+            if name and spokecluster_id:
+                xlate_dict[spokecluster_id] = name
+                reverse_xlate_dict[name] = spokecluster_id
+
+            if spokecluster_id:
+                id_list.append(spokecluster_id)
+
+    return xlate_dict, reverse_xlate_dict, id_list
+
+
 def generate_id_name_map(sdk, reverse=False):
     """
     Generate the ID-NAME map dict
@@ -467,6 +496,11 @@ def generate_id_name_map(sdk, reverse=False):
     id_securityzone_dict, securityzone_id_dict, securityzone_id_list = securityzone_to_name_dict(sdk)
     global_id_name_dict.update(id_securityzone_dict)
     global_name_id_dict.update(securityzone_id_dict)
+
+    logger.info("Caching Spoke Clusters..")
+    id_spokecluster_dict, spokecluster_id_dict, spokecluster_id_list = spokeclusters_to_name_dict(sdk)
+    global_id_name_dict.update(id_spokecluster_dict)
+    global_name_id_dict.update(spokecluster_id_dict)
 
     id_interface_dict = {}
 
