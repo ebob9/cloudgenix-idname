@@ -34,6 +34,7 @@ MIT
 #### Version
 Version | Changes
 ------- | --------
+**1.2.2**| Add support for Spoke Clusters
 **1.2.1**| Add support for SDK >= 5.1.1b1
 **1.2.0**| Add reverse lookup support (name -> ID) to all functions. Reverse lookup has limitations as names are not unique.
 **1.1.3**| Resolve Issue #6, enhance Site WAN Interface mapping, add shortcut to generate_id_name_map.

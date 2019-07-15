@@ -4,7 +4,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup(name='cloudgenix_idname',
-      version='1.2.1',
+      version='1.2.2',
       description='ID -> Name translator for the CloudGenix Python SDK',
       long_description=long_description,
       long_description_content_type='text/markdown',
