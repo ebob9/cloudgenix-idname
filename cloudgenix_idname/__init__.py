@@ -366,7 +366,7 @@ def securitypolicyset_to_name_dict(sdk):
 
     if not status or not securitypolicyset_list:
         logger.info("ERROR: unable to get securitypolicysets for account '{0}'.".format(sdk.tenant_name))
-        return xlate_dict, id_list
+        return xlate_dict, reverse_xlate_dict, id_list
 
     # build translation dict
     for securitypolicyset in securitypolicyset_list:
