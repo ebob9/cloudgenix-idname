@@ -702,9 +702,12 @@ class CloudGenixIDName(object):
 
     def generate_sites_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
         """
-        Generate a site lookup map
+        Generate a sites lookup map
         :param key_val: The value from the object that should be the 'key' of the lookup dict
         :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
         :return: The lookup dict.
         """
         if nag_cache and isinstance(nag_cache, list):
@@ -717,6 +720,667 @@ class CloudGenixIDName(object):
 
         # return the requested dict
         return self.sdk.build_lookup_dict(self.sites_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_elements_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a elements lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current elements info.
+        self.elements_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.elements_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_machines_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a machines lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current machines info.
+        self.machines_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.machines_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_policysets_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a policysets lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current policysets info.
+        self.policysets_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.policysets_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_securitypolicysets_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a securitypolicysets lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current securitypolicysets info.
+        self.securitypolicysets_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.securitypolicysets_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_securityzones_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a securityzones lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current securityzones info.
+        self.securityzones_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.securityzones_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_networkpolicysetstacks_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a networkpolicysetstacks lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current networkpolicysetstacks info.
+        self.networkpolicysetstacks_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.networkpolicysetstacks_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_prioritypolicysetstacks_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a prioritypolicysetstacks lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current prioritypolicysetstacks info.
+        self.prioritypolicysetstacks_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.prioritypolicysetstacks_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_waninterfacelabels_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a waninterfacelabels lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current waninterfacelabels info.
+        self.waninterfacelabels_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.waninterfacelabels_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_wannetworks_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a wannetworks lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current wannetworks info.
+        self.wannetworks_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.wannetworks_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_wanoverlays_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a wanoverlays lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current wanoverlays info.
+        self.wanoverlays_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.wanoverlays_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_servicebindingmaps_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a servicebindingmaps lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current servicebindingmaps info.
+        self.servicebindingmaps_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.servicebindingmaps_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_serviceendpoints_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a serviceendpoints lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current serviceendpoints info.
+        self.serviceendpoints_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.serviceendpoints_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_ipsecprofiles_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a ipsecprofiles lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current ipsecprofiles info.
+        self.ipsecprofiles_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.ipsecprofiles_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_networkcontexts_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a networkcontexts lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current networkcontexts info.
+        self.networkcontexts_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.networkcontexts_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_appdefs_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a appdefs lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current appdefs info.
+        self.appdefs_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.appdefs_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_natglobalprefixes_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a natglobalprefixes lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current natglobalprefixes info.
+        self.natglobalprefixes_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.natglobalprefixes_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_natlocalprefixes_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a natlocalprefixes lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current natlocalprefixes info.
+        self.natlocalprefixes_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.natlocalprefixes_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_natpolicypools_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a natpolicypools lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current natpolicypools info.
+        self.natpolicypools_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.natpolicypools_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_natpolicysetstacks_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a natpolicysetstacks lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current natpolicysetstacks info.
+        self.natpolicysetstacks_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.natpolicysetstacks_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_natzones_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a natzones lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current natzones info.
+        self.natzones_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.natzones_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_tenant_operators_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a tenant_operators lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current tenant_operators info.
+        self.tenant_operators_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.tenant_operators_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_topology_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a topology lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current topology info.
+        self.topology_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.topology_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_interfaces_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a interfaces lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current interfaces info.
+        self.interfaces_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.interfaces_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_waninterfaces_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a waninterfaces lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current waninterfaces info.
+        self.waninterfaces_cache_update()
+
+        # if using name, waninterfaces can have blank name, which UI normalizes to "Circuit to <wannetwork>". Do that
+        # here as well.
+        if key_val == 'name' or value_val == 'name':
+            # ok, we have to do translation :(
+            # ensure we have a wannetwork id to name map, which will also update the wannetwork cache.
+            wannetwork_id2n = self.generate_wannetworks_map()
+            name_fixed_waninterfaces_cache = []
+            for waninterface in self.waninterfaces_cache:
+                waninterface_name = waninterface.get('name')
+                if not waninterface_name:
+                    waninterface_network_id = waninterface.get('network_id')
+                    patched_waninterface = dict(waninterface)
+                    if waninterface_network_id is not None:
+                        # lets make a name.
+                        patched_waninterface['name'] = "Circuit to {0}" \
+                                                       "".format(wannetwork_id2n.get(waninterface_network_id,
+                                                                                     waninterface_network_id))
+
+                    else:
+                        # No network_id, something is broken.
+                        patched_waninterface['name'] = "Circuit to UNKNOWN (No network_id present)"
+
+                    # update the fixed cache
+                    name_fixed_waninterfaces_cache.append(patched_waninterface)
+
+                else:
+                    # this waninterface has a name. Add it, and move on.
+                    name_fixed_waninterfaces_cache.append(waninterface)
+
+            # ok, now that we are fixed, return map using fixed cache.
+            return self.sdk.build_lookup_dict(name_fixed_waninterfaces_cache,
+                                              key_val=key_val,
+                                              value_val=value_val,
+                                              force_nag=force_nag,
+                                              nag_cache=already_nagged_dup_keys)
+
+        # If we got here, we are not using name key or val, just return the requested dict
+        return self.sdk.build_lookup_dict(self.waninterfaces_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_lannetworks_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None):
+        """
+        Generate a lannetworks lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current lannetworks info.
+        self.lannetworks_cache_update()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.lannetworks_cache,
                                           key_val=key_val,
                                           value_val=value_val,
                                           force_nag=force_nag,
