@@ -16,11 +16,11 @@ setup(name='cloudgenix_idname',
             'cloudgenix >= 5.2.1b1'
       ],
       packages=['cloudgenix_idname'],
+      python_requires='>=3.6.1',
       classifiers=[
             "Development Status :: 5 - Production/Stable",
             "Intended Audience :: Developers",
             "License :: OSI Approved :: MIT License",
-            "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
