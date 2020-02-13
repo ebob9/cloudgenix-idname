@@ -59,6 +59,7 @@ MIT
 #### Version
 Version | Changes
 ------- | --------
+**2.0.1**| Add support for localprefixes, globalprefixes
 **2.0.0**| Major rewrite, Deprecate Python2. Now supports a Class object and caching with delta updates (where available.)
 **1.2.3**| Fixed minor return issue
 **1.2.2**| Add support for Spoke Clusters
