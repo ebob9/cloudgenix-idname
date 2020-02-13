@@ -104,6 +104,10 @@ class CloudGenixIDName(object):
     vpnlinks_newest = None
     anynets_cache = None
     anynets_newest = None
+    localprefixfilters_cache = None
+    localprefixfilters_newest = None
+    globalprefixfilters_cache = None
+    globalprefixfilters_newest = None
 
     nag_cache = []
 
@@ -146,6 +150,8 @@ class CloudGenixIDName(object):
         self.update_spokeclusters_cache()
         self.update_vpnlinks_cache()
         self.update_anynets_cache()
+        self.update_localprefixfilters_cache()
+        self.update_globalprefixfilters_cache()
 
     ######################################################
     #
@@ -705,6 +711,7 @@ class CloudGenixIDName(object):
         return
 
     def update_topology_cache(self):
+        # Non delta caching function
         # self.topology_cache, self.topology_newest = self.extract_links(self.sdk.post.topology({"stub_links": "True",
         #                                                                                        "type": "anynet",
         #                                                                                        "links_only": False}))
@@ -764,6 +771,7 @@ class CloudGenixIDName(object):
         return
 
     def update_waninterfaces_cache(self):
+        # Non delta caching function
         logger.debug("update_waninterfaces_cache function")
         if self.waninterfaces_cache is None or self.waninterfaces_newest is None:
             # # no cache data, get full dump
@@ -796,6 +804,7 @@ class CloudGenixIDName(object):
         return
 
     def update_lannetworks_cache(self):
+        # Non delta caching function
         logger.debug("update_lannetworks_cache function")
         if self.lannetworks_cache is None or self.lannetworks_newest is None:
             # # no cache data, get full dump
@@ -827,6 +836,7 @@ class CloudGenixIDName(object):
         return
 
     def update_spokeclusters_cache(self):
+        # Non delta caching function
         logger.debug("update_spokeclusters_cache function")
         if self.spokeclusters_cache is None or self.spokeclusters_newest is None:
             # # no cache data, get full dump
@@ -881,9 +891,60 @@ class CloudGenixIDName(object):
         return
 
     def update_anynets_cache(self):
+        # Non delta caching function
+        logger.debug("update_anynets_cache function")
         self.anynets_cache, self.anynets_newest = self.extract_links(self.sdk.post.topology({"stub_links": "True",
                                                                                              "type": "anynet",
                                                                                              "links_only": False}))
+
+    def update_localprefixfilters_cache(self):
+        logger.debug("update_localprefixfilters_cache function")
+        if self.localprefixfilters_cache is None or self.localprefixfilters_newest is None:
+            # no cache data, get full dump
+            self.localprefixfilters_cache, self.localprefixfilters_newest = self.iterate_sdk_query(
+                self.sdk.post.localprefixfilters_query,
+                QUERY_ALL,
+                'localprefixfilters')
+        else:
+            # update called and we already have a cache, pull new only
+            updated_localprefixfilters_cache, updated_localprefixfilters_newest = self.iterate_sdk_query(
+                self.sdk.post.localprefixfilters_query,
+                query_newer_than(self.localprefixfilters_newest),
+                'localprefixfilters')
+            # update localprefixfilters cache, if needed
+            if len(updated_localprefixfilters_cache) > 0:
+                self.localprefixfilters_cache = update_cache_bykey(self.localprefixfilters_cache,
+                                                                   updated_localprefixfilters_cache, key='id')
+
+            if updated_localprefixfilters_newest > self.localprefixfilters_newest:
+                self.localprefixfilters_newest = updated_localprefixfilters_newest
+
+        return
+
+    def update_globalprefixfilters_cache(self):
+        logger.debug("update_globalprefixfilters_cache function")
+        if self.globalprefixfilters_cache is None or self.globalprefixfilters_newest is None:
+            # no cache data, get full dump
+            self.globalprefixfilters_cache, self.globalprefixfilters_newest = self.iterate_sdk_query(
+                self.sdk.post.globalprefixfilters_query,
+                QUERY_ALL,
+                'globalprefixfilters')
+        else:
+            # update called and we already have a cache, pull new only
+            updated_globalprefixfilters_cache, updated_globalprefixfilters_newest = self.iterate_sdk_query(
+                self.sdk.post.globalprefixfilters_query,
+                query_newer_than(self.globalprefixfilters_newest),
+                'globalprefixfilters')
+            # update globalprefixfilters cache, if needed
+            if len(updated_globalprefixfilters_cache) > 0:
+                self.globalprefixfilters_cache = update_cache_bykey(self.globalprefixfilters_cache,
+                                                                    updated_globalprefixfilters_cache,
+                                                                    key='id')
+
+            if updated_globalprefixfilters_newest > self.globalprefixfilters_newest:
+                self.globalprefixfilters_newest = updated_globalprefixfilters_newest
+
+        return
 
     ######################################################
     #
@@ -1999,6 +2060,62 @@ class CloudGenixIDName(object):
 
         # return the requested dict
         return self.sdk.build_lookup_dict(self.spokeclusters_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_localprefixfilters_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None,
+                                      update_cache=True):
+        """
+        Generate a localprefixfilters lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+        :param update_cache: Bool, if False, skip cache update.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current localprefixfilters info.
+        if update_cache:
+            self.update_localprefixfilters_cache()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.localprefixfilters_cache,
+                                          key_val=key_val,
+                                          value_val=value_val,
+                                          force_nag=force_nag,
+                                          nag_cache=already_nagged_dup_keys)
+
+    def generate_globalprefixfilters_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None,
+                                      update_cache=True):
+        """
+        Generate a globalprefixfilters lookup map
+        :param key_val: The value from the object that should be the 'key' of the lookup dict
+        :param value_val: The value from the object that should be the 'value' of the lookup dict
+        :param force_nag: Optional - Bool, if True will nag even if key in `nag_cache`
+        :param nag_cache: Optional - List of keys that already exist in a lookup dict that should be duplicate checked.
+        :param update_cache: Bool, if False, skip cache update.
+
+        :return: The lookup dict.
+        """
+        if nag_cache and isinstance(nag_cache, list):
+            already_nagged_dup_keys = nag_cache
+        else:
+            already_nagged_dup_keys = []
+
+        # Ensure we have current globalprefixfilters info.
+        if update_cache:
+            self.update_globalprefixfilters_cache()
+
+        # return the requested dict
+        return self.sdk.build_lookup_dict(self.globalprefixfilters_cache,
                                           key_val=key_val,
                                           value_val=value_val,
                                           force_nag=force_nag,
