@@ -9,6 +9,9 @@ And builds an ID keyed name dictionary.
 """
 import logging
 from copy import deepcopy
+import sys
+
+from cloudgenix import CloudGenixAPIError, jdout_detailed
 
 # Set NON-SYSLOG logging to use function name
 logger = logging.getLogger(__name__)
@@ -2066,7 +2069,7 @@ class CloudGenixIDName(object):
                                           nag_cache=already_nagged_dup_keys)
 
     def generate_localprefixfilters_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None,
-                                      update_cache=True):
+                                        update_cache=True):
         """
         Generate a localprefixfilters lookup map
         :param key_val: The value from the object that should be the 'key' of the lookup dict
@@ -2094,7 +2097,7 @@ class CloudGenixIDName(object):
                                           nag_cache=already_nagged_dup_keys)
 
     def generate_globalprefixfilters_map(self, key_val='id', value_val='name', force_nag=False, nag_cache=None,
-                                      update_cache=True):
+                                         update_cache=True):
         """
         Generate a globalprefixfilters lookup map
         :param key_val: The value from the object that should be the 'key' of the lookup dict
@@ -2158,9 +2161,16 @@ class CloudGenixIDName(object):
                 return [{}], 0
 
     def iterate_sdk_get(self, sdk_function, error_label=None):
-        logger.debug("interate_sdk_get function:")
+        logger.debug("iterate_sdk_get function:")
         resp = sdk_function()
-        current_items = self.sdk.extract_items(resp, error_label=error_label)
+        try:
+            current_items = self.sdk.extract_items(resp, error_label=error_label)
+        except CloudGenixAPIError as e:
+            # change API error to warning.
+            self.throw_warning(str(e))
+            # return empty list and 0 last update timestamp.
+            return [], 0
+
         current_latest_timestamp = max([entry["_updated_on_utc"] for entry in current_items
                                        if entry.get("_updated_on_utc") and
                                        isinstance(entry.get("_updated_on_utc"), int)],
@@ -2256,7 +2266,7 @@ class CloudGenixIDName(object):
                                        default=0)
         results_newest = current_latest_timestamp
         # iterate and make queries
-        while len(current_items) is not 0:
+        while len(current_items) != 0:
             debug_str = "NEXT_PAGE: {0}: ".format(next_page)
             next_page += 1
             local_query_dict['dest_page'] = next_page
@@ -2277,6 +2287,23 @@ class CloudGenixIDName(object):
             # if there are current items, should continue to loop. Otherwise exit.
         # return a tuple of both list of items and the newest timestamp
         return results_list, results_newest
+
+    @staticmethod
+    def throw_warning(message, resp=None, cr=True):
+        """
+        Recoverable Warning.
+
+        """
+        output = "WARNING: " + str(message)
+        if cr:
+            output += "\n"
+        sys.stderr.write(output)
+        if resp is not None:
+            output2 = str(jdout_detailed(resp))
+            if cr:
+                output2 += "\n"
+            sys.stderr.write(output2)
+        return
 
 ######################################################
 #
@@ -2852,7 +2879,7 @@ def generate_id_name_map(sdk, reverse=False, idnamev1=True):
     global_name_id_dict.update(name_networkpolicysetstack_dict)
 
     logger.info("Caching Networkpolicysets..")
-    id_networkpolicyset_dict, name_networkpolicyset_dict  = \
+    id_networkpolicyset_dict, name_networkpolicyset_dict = \
         networkpolicysets_dicts(sdk)
     global_id_name_dict.update(id_networkpolicyset_dict)
     global_name_id_dict.update(name_networkpolicyset_dict)
@@ -2958,5 +2985,3 @@ def gen(sdk, reverse=False, idnamev1=True):
     :return: ID Name dictionary
     """
     return generate_id_name_map(sdk, reverse=reverse, idnamev1=idnamev1)
-
-

@@ -4,7 +4,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup(name='cloudgenix_idname',
-      version='2.0.1',
+      version='2.0.2',
       description='ID -> Name translator for the CloudGenix Python SDK',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -13,7 +13,7 @@ setup(name='cloudgenix_idname',
       author_email='cloudgenix_idname@ebob9.com',
       license='MIT',
       install_requires=[
-            'cloudgenix >= 5.2.1b1'
+            'cloudgenix >= 5.4.3b1'
       ],
       packages=['cloudgenix_idname'],
       python_requires='>=3.6.1',

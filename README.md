@@ -59,6 +59,7 @@ MIT
 #### Version
 Version | Changes
 ------- | --------
+**2.0.2**| Added support for failure of API calls to still generate lookup maps. (Specifically seen with tenant_viewonly on operators API.)
 **2.0.1**| Add support for localprefixes, globalprefixes
 **2.0.0**| Major rewrite, Deprecate Python2. Now supports a Class object and caching with delta updates (where available.)
 **1.2.3**| Fixed minor return issue
